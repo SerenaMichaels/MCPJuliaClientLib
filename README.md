@@ -66,7 +66,7 @@ include("src/MCPClient.jl")
 using .MCPClient
 
 # Connect to a server
-conn = MCPConnection("../julia_mcp_server/db_admin_example.jl", "../julia_mcp_server")
+conn = MCPConnection("/path/to/julia_mcp_server/db_admin_example.jl", "/path/to/julia_mcp_server")
 
 # Initialize and use
 initialize_server(conn)
@@ -91,6 +91,8 @@ julia examples/cross_database_migration.jl
 # Multi-server orchestration
 julia examples/multi_server_orchestration.jl
 ```
+
+**📚 For detailed examples and usage patterns, see [EXAMPLES.md](EXAMPLES.md)**
 
 ## Example Workflows
 
@@ -219,19 +221,28 @@ MCPJuliaClient/
 └── data/                     # Sample data files
 ```
 
-## Configuration
+## Documentation
 
-### Server Paths
+### 📖 Complete Documentation Suite
+
+- **[API Reference](docs/API_Reference.md)** - Complete API documentation for all functions and types
+- **[Workflow Guide](docs/Workflow_Guide.md)** - Detailed explanations of all four workflow patterns with best practices
+- **[Examples](EXAMPLES.md)** - Quick-start code examples for common operations
+- **[Troubleshooting](docs/Troubleshooting.md)** - Common issues and solutions with debugging techniques
+
+### 🔧 Configuration
+
+#### Server Paths
 
 Update server paths in examples to match your MCPJuliaServer installation:
 
 ```julia
 # Update these paths in examples
-server_path = "../../julia_mcp_server/db_admin_example.jl"
-working_dir = "../../julia_mcp_server"
+server_path = "/absolute/path/to/julia_mcp_server/db_admin_example.jl"
+working_dir = "/absolute/path/to/julia_mcp_server"
 ```
 
-### PostgreSQL Configuration  
+#### PostgreSQL Configuration  
 
 Configure PostgreSQL connection via environment variables:
 
@@ -242,6 +253,8 @@ export POSTGRES_USER="postgres"
 export POSTGRES_PASSWORD="your_password"
 export POSTGRES_DB="postgres"
 ```
+
+**⚠️ Important:** Use absolute paths for server connections to avoid path resolution issues.
 
 ## Use Cases
 
@@ -307,7 +320,28 @@ This is a demonstration implementation of MCP client workflows in Julia.
 
 ## Support
 
-For issues and questions:
-- Check existing [Issues](https://github.com/SerenaMichaels/MCPJuliaClient/issues)
-- Review the MCPJuliaServer [documentation](https://github.com/SerenaMichaels/MCPJuliaServer)
-- Ensure PostgreSQL is properly configured and accessible
+### 🆘 Getting Help
+
+1. **Check Documentation First:**
+   - [Troubleshooting Guide](docs/Troubleshooting.md) for common issues
+   - [API Reference](docs/API_Reference.md) for function usage
+   - [Examples](EXAMPLES.md) for code patterns
+
+2. **For Issues:**
+   - Check existing [Issues](https://github.com/SerenaMichaels/MCPJuliaClient/issues)
+   - Review the MCPJuliaServer [documentation](https://github.com/SerenaMichaels/MCPJuliaServer)
+   - Ensure PostgreSQL is properly configured and accessible
+
+3. **Environment Validation:**
+   ```bash
+   # Run the test suite to validate setup
+   julia scripts/test_all_examples.jl
+   ```
+
+### 🐛 Reporting Issues
+
+When reporting issues, please include:
+- Julia version and OS
+- Complete error messages and stack traces
+- Steps to reproduce the issue
+- Relevant configuration (server paths, PostgreSQL setup)
