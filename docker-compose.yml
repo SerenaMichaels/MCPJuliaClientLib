@@ -1,0 +1,172 @@
+version: '3.8'
+
+services:
+  mcp-client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - JULIA_PATH=/usr/local/julia/bin/julia
+      - MCP_SERVER_DIR=/app/servers
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=mcpserver
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-secure_default_password}
+      - POSTGRES_DB=mcpserver
+      - MCP_CLIENT_TIMEOUT=30
+      - MCP_CLIENT_LOG_LEVEL=INFO
+      - MCP_CLIENT_RETRY_COUNT=3
+      - MCP_DEV_MODE=false
+      - MCP_DEBUG_COMMUNICATION=false
+    volumes:
+      - mcp_client_data:/app/data
+      - mcp_client_logs:/app/logs
+      - ./examples:/app/examples
+      - mcp_server_files:/app/servers
+    depends_on:
+      mcp-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks:
+      - mcp_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "julia", "--project=.", "-e", "println(\"Client Health OK\")"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # MCP Server (from server repository)
+  mcp-server:
+    image: mcp-julia-server:latest
+    build:
+      context: ../julia_mcp_server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=mcpserver
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-secure_default_password}
+      - POSTGRES_DB=mcpserver
+      - MCP_FILE_SERVER_BASE=/app/data
+    volumes:
+      - mcp_server_data:/app/data
+      - mcp_server_files:/app/servers
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - mcp_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "julia", "--project=.", "-e", "println(\"Server Health OK\")"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: mcpserver
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secure_default_password}
+      POSTGRES_DB: mcpserver
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - mcp_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mcpserver -d mcpserver"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Optional: Redis for caching
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - mcp_network
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_default_password}
+    profiles:
+      - with-redis
+
+  # Optional: Monitoring with Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - mcp_network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # Optional: Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - mcp_network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+volumes:
+  postgres_data:
+    driver: local
+  mcp_server_data:
+    driver: local
+  mcp_server_files:
+    driver: local
+  mcp_client_data:
+    driver: local
+  mcp_client_logs:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  mcp_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

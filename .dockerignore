@@ -1,0 +1,89 @@
+# MCP Julia Client .dockerignore
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Julia temporary files
+.julia/
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+deps/build.log
+deps/deps.jl
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Documentation build files
+docs/build/
+site/
+
+# Test artifacts
+test/tmp/
+coverage/
+*.coverage
+
+# Data files (keep examples but not actual data)
+data/*
+!data/.gitkeep
+!data/examples/
+
+# Monitoring data
+monitoring/data/
+
+# Cache directories
+.cache/
+__pycache__/
+
+# Docker files in subdirectories
+**/Dockerfile
+**/docker-compose*.yml
+**/*/Dockerfile
+**/*/docker-compose*.yml
+
+# Backups
+*.bak
+*.backup
+backup/
+
+# Archives
+*.tar
+*.tar.gz
+*.zip
+*.rar
+
+# Large files that shouldn't be in containers
+*.iso
+*.dmg

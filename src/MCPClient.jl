@@ -23,7 +23,7 @@ function start_server(conn::MCPConnection)
     
     try
         # Start the Julia MCP server process
-        julia_cmd = "/home/seren/test-project/julia-1.11.2/bin/julia"
+        julia_cmd = get(ENV, "JULIA_PATH", "julia")
         cmd = `$julia_cmd --project=$(conn.working_dir) $(conn.server_path)`
         conn.process = open(cmd, "r+")
         
