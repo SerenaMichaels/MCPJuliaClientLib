@@ -1,0 +1,41 @@
+# Julia
+*.jl.*.cov
+*.jl.cov
+*.jl.mem
+deps/deps.jl
+Manifest.toml
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Data and output files
+data/*.csv
+data/*.json
+processed/
+reports/
+migration_*/
+analytics_workspace_*/
+pipeline_report_*.txt
+EXECUTIVE_SUMMARY.txt
+
+# Database dumps
+*.sql
+*.dump
