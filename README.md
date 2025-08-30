@@ -44,8 +44,8 @@ Julia MCP Servers (MCPJuliaServer)
 
 ```bash
 # Clone the repository
-git clone https://github.com/SerenaMichaels/MCPJuliaClient.git
-cd MCPJuliaClient
+git clone https://github.com/SerenaMichaels/MCPJuliaClientLib.git
+cd MCPJuliaClientLib
 
 # Activate the project
 julia --project=.
@@ -206,7 +206,7 @@ julia examples/database_first_workflow.jl
 ## Project Structure
 
 ```
-MCPJuliaClient/
+MCPJuliaClientLib/
 ├── Project.toml              # Julia project configuration
 ├── README.md                 # This file
 ├── src/
@@ -328,7 +328,7 @@ This is a demonstration implementation of MCP client workflows in Julia.
    - [Examples](EXAMPLES.md) for code patterns
 
 2. **For Issues:**
-   - Check existing [Issues](https://github.com/SerenaMichaels/MCPJuliaClient/issues)
+   - Check existing [Issues](https://github.com/SerenaMichaels/MCPJuliaClientLib/issues)
    - Review the MCPJuliaServer [documentation](https://github.com/SerenaMichaels/MCPJuliaServer)
    - Ensure PostgreSQL is properly configured and accessible
 

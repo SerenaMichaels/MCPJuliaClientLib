@@ -130,7 +130,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Core Components
 ```
-MCPJuliaClient/
+MCPJuliaClientLib/
 ├── src/MCPClient.jl          # Core MCP protocol implementation
 ├── examples/                 # Four comprehensive workflow examples  
 ├── docs/                     # Complete documentation suite
