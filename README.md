@@ -40,7 +40,45 @@ Julia MCP Servers (MCPJuliaServer)
 2. **PostgreSQL**: Running PostgreSQL instance (tested with PostgreSQL 17)
 3. **Julia 1.6+**: Julia programming language
 
+## Quick Start
+
+### For Claude Desktop Users
+
+#### WSL/Linux Users
+1. **One-line installation:**
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/SerenaMichaels/MCPJuliaClientLib/main/scripts/install.sh | bash
+   ```
+
+2. **Configure client for Claude Desktop:**
+   - The client provides high-level orchestration capabilities
+   - Use alongside the [MCPJuliaServer](https://github.com/SerenaMichaels/MCPJuliaServer) for complete functionality
+
+#### Windows Users (Claude Desktop on Windows)
+
+For Windows Claude Desktop with WSL servers:
+
+1. **Install servers in WSL:**
+   ```bash
+   # In WSL - install both server and client
+   curl -fsSL https://raw.githubusercontent.com/SerenaMichaels/MCPJuliaServer/main/scripts/install.sh | bash
+   curl -fsSL https://raw.githubusercontent.com/SerenaMichaels/MCPJuliaClientLib/main/scripts/install.sh | bash
+   ```
+
+2. **Setup Windows access:**
+   ```bash
+   # In WSL - enable Windows Claude access to servers
+   ./windows_config/setup_windows_access.sh start
+   ```
+
+3. **Available for Windows Claude:**
+   - **🎯 mcp-orchestrator-http**: High-level workflows combining multiple servers
+   - **📊 Direct server access**: PostgreSQL, File, and DB Admin servers
+   - **🔄 Complex pipelines**: ETL, migration, and analytics workflows
+
 ## Installation
+
+### Manual Installation
 
 ```bash
 # Clone the repository
